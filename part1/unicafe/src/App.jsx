@@ -8,6 +8,28 @@ const FeedbackCounter = ({label, counter}) => {
   return <p>{label} {counter}</p>
 }
 
+const Average = ({good, neutral, bad}) => {
+  const total = good + neutral + bad
+  const average = (good - bad) / total
+  
+  if(Number.isNaN(average)) {
+    return <p>average 0</p>
+  }
+
+  return <p>average {average}</p>
+}
+
+const PositivePercentage = ({good, neutral, bad}) => {
+  const total = good + neutral + bad
+  const positivePercentage = (good / total) * 100
+
+  if(Number.isNaN(positivePercentage)) {
+    return <p>positive 0</p>
+  }
+
+  return <p>positive {positivePercentage}</p>
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -40,6 +62,8 @@ const App = () => {
       <FeedbackCounter label={goodLabel} counter={good} />
       <FeedbackCounter label={neutralLabel} counter={neutral} />
       <FeedbackCounter label={badLabel} counter={bad} />
+      <Average good={good} neutral={neutral} bad={bad} />
+      <PositivePercentage good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
