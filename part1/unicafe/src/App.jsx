@@ -51,11 +51,11 @@ const Statistics = ({counter}) => {
       <p>Statistics</p>
       <table>
         <tbody>
-        <StatisticLine text={goodLabel} value={counter.goodCounter} />
-        <StatisticLine text={neutralLabel} value={counter.neutralCounter} />
-        <StatisticLine text={badLabel} value={counter.badCounter} />
-        <StatisticLine text={averageLabel} value={average} />
-        <StatisticLine text={positiveLabel} value={positivePercentage} />
+          <StatisticLine text={goodLabel} value={counter.goodCounter} />
+          <StatisticLine text={neutralLabel} value={counter.neutralCounter} />
+          <StatisticLine text={badLabel} value={counter.badCounter} />
+          <StatisticLine text={averageLabel} value={average} />
+          <StatisticLine text={positiveLabel} value={positivePercentage} />
         </tbody>
       </table>
     </>
