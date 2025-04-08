@@ -12,18 +12,11 @@ const Button = ({onClick, label}) => {
 }
 
 const StatisticLine = ({text, value}) => {
-  return <p>{text} {value}</p>
-}
-
-const PositivePercentage = ({counter}) => {
-  const total = counter.goodCounter + counter.neutralCounter + counter.badCounter
-  const positivePercentage = (counter.goodCounter / total) * 100
-
-  if(Number.isNaN(positivePercentage)) {
-    return <p>positive 0</p>
-  }
-
-  return <p>positive {positivePercentage}</p>
+  return (
+    <tr>
+      <td>{text} {value}</td>
+    </tr>
+  )
 }
 
 const Statistics = ({counter}) => {
@@ -56,13 +49,16 @@ const Statistics = ({counter}) => {
   return (
     <>
       <p>Statistics</p>
-      <StatisticLine text={goodLabel} value={counter.goodCounter} />
-      <StatisticLine text={neutralLabel} value={counter.neutralCounter} />
-      <StatisticLine text={badLabel} value={counter.badCounter} />
-      <StatisticLine text={averageLabel} value={average} />
-      <StatisticLine text={positiveLabel} value={positivePercentage} />
+      <table>
+        <tbody>
+        <StatisticLine text={goodLabel} value={counter.goodCounter} />
+        <StatisticLine text={neutralLabel} value={counter.neutralCounter} />
+        <StatisticLine text={badLabel} value={counter.badCounter} />
+        <StatisticLine text={averageLabel} value={average} />
+        <StatisticLine text={positiveLabel} value={positivePercentage} />
+        </tbody>
+      </table>
     </>
-
   )
 }
 
