@@ -4,24 +4,15 @@ import { useState } from 'react'
 const goodLabel = 'good'
 const neutralLabel = 'neutral'
 const badLabel = 'bad'
+const averageLabel = 'average'
+const positiveLabel = 'positive'
 
-const FeedbackButton = ({onClick, label}) => {
+const Button = ({onClick, label}) => {
   return <button onClick={onClick}>{label}</button>
 }
 
-const FeedbackCounter = ({label, counter}) => {
-  return <p>{label} {counter}</p>
-}
-
-const Average = ({counter}) => {
-  const total = counter.goodCounter + counter.neutralCounter + counter.badCounter
-  const average = (counter.goodCounter - counter.badCounter) / total
-  
-  if(Number.isNaN(average)) {
-    return <p>average 0</p>
-  }
-
-  return <p>average {average}</p>
+const StatisticLine = ({text, value}) => {
+  return <p>{text} {value}</p>
 }
 
 const PositivePercentage = ({counter}) => {
@@ -40,24 +31,36 @@ const Statistics = ({counter}) => {
                           counter.neutralCounter === 0 &&
                           counter.badCounter === 0
 
+  const total = counter.goodCounter + counter.neutralCounter + counter.badCounter
+  let positivePercentage = (counter.goodCounter / total) * 100
+  let average = (counter.goodCounter - counter.badCounter) / total
+  
+  if(Number.isNaN(average)) {
+    average = 0
+  }
+
+  if(Number.isNaN(positivePercentage)) {
+    positivePercentage = 0
+  }
+
   if(isNoFeedback) {
     return (
       <>
         <p>Statistics</p>
         <p>No feedback given</p>
       </>
-  
+
     )
   }
 
   return (
     <>
       <p>Statistics</p>
-      <FeedbackCounter label={goodLabel} counter={counter.goodCounter} />
-      <FeedbackCounter label={neutralLabel} counter={counter.neutralCounter} />
-      <FeedbackCounter label={badLabel} counter={counter.badCounter} />
-      <Average counter={counter} />
-      <PositivePercentage counter={counter} />
+      <StatisticLine text={goodLabel} value={counter.goodCounter} />
+      <StatisticLine text={neutralLabel} value={counter.neutralCounter} />
+      <StatisticLine text={badLabel} value={counter.badCounter} />
+      <StatisticLine text={averageLabel} value={average} />
+      <StatisticLine text={positiveLabel} value={positivePercentage} />
     </>
 
   )
@@ -90,9 +93,9 @@ const App = () => {
   return (
     <div>
       <p>Give feedback</p>
-      <FeedbackButton onClick={handleGoodFeedback} label={goodLabel} />
-      <FeedbackButton onClick={handleNeutralFeedback} label={neutralLabel} />
-      <FeedbackButton onClick={handleBadFeedback} label={badLabel} />
+      <Button onClick={handleGoodFeedback} label={goodLabel} />
+      <Button onClick={handleNeutralFeedback} label={neutralLabel} />
+      <Button onClick={handleBadFeedback} label={badLabel} />
       <Statistics counter={counters}/>
     </div>
   )
