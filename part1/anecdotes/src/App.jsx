@@ -1,8 +1,11 @@
 import { useState } from 'react'
 
-const Button = ({nextAnecdote}) => {
+const nextAnecdoteLabel = "Next Anecdote"
+const voteLabel = "Vote"
+
+const Button = ({onClick, label}) => {
   return (
-    <button onClick={nextAnecdote}>Next Anecdote</button>
+    <button onClick={onClick}>{label}</button>
   )
 }
 
@@ -18,6 +21,13 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
+  const arr = Array(anecdotes.length).fill(0).reduce((obj, voteCounter, index) => {
+    obj[index] = voteCounter
+    return obj
+  }, {})
+
+  const [vote, setVote] = useState(arr)
+
   const [selected, setSelected] = useState(() => {
     return Math.floor(Math.random() * anecdotes.length)
   })
@@ -27,11 +37,21 @@ const App = () => {
     setSelected(nextRandomNum)
   }
 
+  const voteIncrement = (selectedNumber) => {
+    const newVote = {
+      ...vote,
+    }
+    newVote[selectedNumber] = newVote[selectedNumber] + 1
+    setVote(newVote)
+  }
+
   return (
     <div>
       {anecdotes[selected]}
       <div>
-        <Button nextAnecdote={nextAnecdote} />
+        <p>Has {vote[selected]} votes</p>
+        <Button onClick={() => voteIncrement(selected)} label={voteLabel} />
+        <Button onClick={nextAnecdote} label={nextAnecdoteLabel} />
       </div>
     </div>
   )
