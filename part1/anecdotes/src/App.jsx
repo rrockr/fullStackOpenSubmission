@@ -21,12 +21,12 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
-  const arr = Array(anecdotes.length).fill(0).reduce((obj, voteCounter, index) => {
+  const voteInit = Array(anecdotes.length).fill(0).reduce((obj, voteCounter, index) => {
     obj[index] = voteCounter
     return obj
   }, {})
 
-  const [vote, setVote] = useState(arr)
+  const [vote, setVote] = useState(voteInit)
 
   const [selected, setSelected] = useState(() => {
     return Math.floor(Math.random() * anecdotes.length)
@@ -45,14 +45,27 @@ const App = () => {
     setVote(newVote)
   }
 
+
+  const myKey = Object.entries(vote).reduce((accumulator, currVal) => {
+    if(vote[accumulator] < currVal[1]) {
+      return currVal[0]
+    }
+
+    return accumulator
+  }, 0)
+
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
-      <div>
-        <p>Has {vote[selected]} votes</p>
-        <Button onClick={() => voteIncrement(selected)} label={voteLabel} />
-        <Button onClick={nextAnecdote} label={nextAnecdoteLabel} />
-      </div>
+      <p>Has {vote[selected]} votes</p>
+      <Button onClick={() => voteIncrement(selected)} label={voteLabel} />
+      <Button onClick={nextAnecdote} label={nextAnecdoteLabel} />
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[myKey]}</p>
+      <p>Has {vote[myKey]} votes</p>
+
     </div>
   )
 }
