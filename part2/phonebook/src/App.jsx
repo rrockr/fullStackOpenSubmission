@@ -20,7 +20,7 @@ const PersonList = ({persons}) => {
 const filterByName = (person, searchName) => {
   const targetName = searchName.toLowerCase().trim()
   const personName = person.name.toLowerCase().trim()
-  return personName.startsWith(targetName)
+  return personName.includes(targetName)
 }
 
 const App = () => {
