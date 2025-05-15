@@ -1,21 +1,7 @@
 import { Fragment, useState } from 'react'
-
-const PersonList = ({persons}) => {
-  const newPersons = persons.map((person) => {
-    return (
-      <Fragment key={person.name}>
-        <p>{person.name} {person.number}</p>
-      </Fragment>
-    )
-  })
-  
-  return (
-    <>
-      {newPersons}
-    </>
-  )
-
-}
+import PersonList from './components/PersonList'
+import PersonInput from './components/PersonInput'
+import Filter from './components/Filter'
 
 const filterByName = (person, searchName) => {
   const targetName = searchName.toLowerCase().trim()
@@ -32,36 +18,22 @@ const App = () => {
   ])
 
   const [searchName, setSearchName] = useState('')
-  const [newName, setNewName] = useState('')
-  const [newPhoneNum, setPhoneNum] = useState('')
+  
+  const addNewPerson = (personName, personNumber) => {
 
-  const submitNewName = (event) => {
-    event.preventDefault()
+    const duplicateName = persons.find((person) => person.name === personName)
 
     const newPerson = {
-      name: newName,
-      number: newPhoneNum
+      name: personName,
+      number: personNumber
     }
 
-    const duplicateName = persons.find((person) => person.name === newName)
-
     if(duplicateName) {
-      alert(`${newName} is already added to phonebook`)
+      alert(`${personName} is already added to phonebook`)
     }
     else {
       setPersons(persons.concat(newPerson))
     }
-    
-    setNewName('')
-    setPhoneNum('')
-  }
-
-  const handleNewName = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNewPhoneNum = (event) => {
-    setPhoneNum(event.target.value)
   }
 
   const handleSearchName = (event) => {
@@ -73,24 +45,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={searchName} onChange={handleSearchName}/>
-      </div>
-      
-      <form onSubmit={submitNewName}>
-        <div>
-          name: <input value={newName} onChange={handleNewName} />
-        </div>
-        <div>
-        number: <input value={newPhoneNum} onChange={handleNewPhoneNum}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
+      <Filter searchName={searchName} handleSearchName={handleSearchName}/>
+      <h3>Add a new name</h3>
+      <PersonInput addNewPerson={addNewPerson}/>
+      <h3>Numbers</h3>
       <PersonList persons={displayedPersons}/>
-      <div>debug: {newName}</div>
     </div>
   )
 }
