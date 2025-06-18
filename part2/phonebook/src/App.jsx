@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import PersonList from './components/PersonList'
 import PersonInput from './components/PersonInput'
 import Filter from './components/Filter'
-import axios from 'axios'
+import phonebookService from './services/phonebook'
 
 const filterByName = (person, searchName) => {
   const targetName = searchName.toLowerCase().trim()
@@ -14,10 +14,10 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    phonebookService
+      .getAllPerson()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }
 
@@ -38,7 +38,11 @@ const App = () => {
       alert(`${personName} is already added to phonebook`)
     }
     else {
-      setPersons(persons.concat(newPerson))
+      phonebookService
+        .createPerson(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
     }
   }
 
