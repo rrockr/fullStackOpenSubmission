@@ -59,7 +59,7 @@ const App = () => {
       <h3>Add a new name</h3>
       <PersonInput addNewPerson={addNewPerson}/>
       <h3>Numbers</h3>
-      <PersonList persons={displayedPersons}/>
+      <PersonList persons={displayedPersons} callback={setPersons}/>
     </div>
   )
 }
