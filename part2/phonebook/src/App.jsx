@@ -27,15 +27,25 @@ const App = () => {
   
   const addNewPerson = (personName, personNumber) => {
 
-    const duplicateName = persons.find((person) => person.name === personName)
+    const duplicatePerson = persons.find((person) => person.name === personName)
 
     const newPerson = {
       name: personName,
       number: personNumber
     }
 
-    if(duplicateName) {
-      alert(`${personName} is already added to phonebook`)
+    if(duplicatePerson) {
+      if(window.confirm(`${personName} is already added to phonebook, replace the old number with a new one?`)) {
+        const updatedPerson = { ...duplicatePerson, name: personName, number: personNumber} 
+
+        phonebookService
+        .updatePerson(updatedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person =>
+            person.id === returnedPerson.id ? returnedPerson : person
+          ))
+        })
+      }
     }
     else {
       phonebookService
