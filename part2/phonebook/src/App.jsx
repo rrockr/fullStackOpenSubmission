@@ -14,6 +14,7 @@ const filterByName = (person, searchName) => {
 const App = () => {
   const [persons, setPersons] = useState([])
   const [notificationMsg, setNotificationMsg] = useState()
+  const [notificationType, setNotificationType] = useState('success')
 
   const hook = () => {
     phonebookService
@@ -43,6 +44,7 @@ const App = () => {
         phonebookService
         .updatePerson(updatedPerson)
         .then(returnedPerson => {
+          setNotificationType('success')
           setPersons(persons.map(person =>
             person.id === returnedPerson.id ? returnedPerson : person
           ))
@@ -52,12 +54,22 @@ const App = () => {
           }, 5000)
           
         })
+        .catch(error => {
+          console.log("Error: ", error)
+          setNotificationType('error')
+          setNotificationMsg(`Information of ${updatedPerson.name} has already been removed from the server`)
+          setTimeout(() => {
+            setNotificationMsg(null)
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== updatedPerson.id))
+        })
       }
     }
     else {
       phonebookService
         .createPerson(newPerson)
         .then(returnedPerson => {
+          setNotificationType('success')
           setPersons(persons.concat(returnedPerson))
           setNotificationMsg(`Added ${newPerson.name}`)
           setTimeout(() => {
@@ -76,7 +88,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMsg} />
+      <Notification message={notificationMsg} type={notificationType} />
       <Filter searchName={searchName} handleSearchName={handleSearchName}/>
       <h3>Add a new name</h3>
       <PersonInput addNewPerson={addNewPerson}/>

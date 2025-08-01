@@ -1,10 +1,31 @@
-const Notification = ({message}) => {
+const Notification = ({message, type = 'success'}) => {
     if(message == null) {
         return null
     }
 
+    const styles = {
+        success: {
+            color: 'green',
+            background: 'lightgrey',
+            fontSize: '20px',
+            borderStyle: 'solid',
+            borderRadius: '5px',
+            padding: '10px',
+            marginBottom: '10px'
+        },
+        error: {
+            color: 'red',
+            background: 'lightgrey',
+            fontSize: '20px',
+            borderStyle: 'solid',
+            borderRadius: '5px',
+            padding: '10px',
+            marginBottom: '10px',
+        }
+    }
+
     return (
-        <div className='notification'>
+        <div style={styles[type]}>
             {message}
         </div>
     )
