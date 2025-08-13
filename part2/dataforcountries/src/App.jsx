@@ -24,8 +24,7 @@ function App() {
   useEffect(getCountriesAllHook, [])
 
   const getCountriesHook = () => {
-    console.log("Matching countries: ", matchingCountries)
-
+    console.log("Matching length: ", matchingCountries.length)
     if(matchingCountries.length > Constants.COUNTRIES_MAX) {
       setCountryDisplay(Constants.DISPLAY_EXCESS)
     }
@@ -33,10 +32,8 @@ function App() {
       setCountryDisplay(Constants.DISPLAY_LIST)
     }
     else if(matchingCountries.length == Constants.COUNTRIES_MIN) {
-      console.log("Last element: ", matchingCountries[0])
-      findCountryService.getCountries(matchingCountries[0])
+      findCountryService.getCountry(matchingCountries[0].name)
         .then(responseData => {
-          console.log("Response: ", responseData)
           setCountry(responseData)
           setCountryDisplay(Constants.DISPLAY_DETAILS)
         })
@@ -54,10 +51,8 @@ function App() {
 
   const handleQuery = (event) => {
     setQuery(event.target.value)
-    console.log("Event value: ", event.target.value)
-
-    setMatchingCountries(allCountries.filter(countryName => {
-      return countryName.includes(event.target.value)
+    setMatchingCountries(allCountries.filter(country => {
+      return country.name.includes(event.target.value)
     }))
 
     
@@ -68,7 +63,7 @@ function App() {
   }
 
   const displayStates = {
-    details: <CountryDetails country={country}/>,
+    details: <CountryDetails country={country} isDetailsShown={true}/>,
     excess: <CountryExcess />,
     list: <CountryList countryList={matchingCountries} />
   }

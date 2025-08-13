@@ -1,6 +1,8 @@
-const CountryDetails = ({country}) => {
+import { Fragment, useState } from "react";
 
-    console.log("Rendering Country Details Country: ", country)
+const CountryDetails = ({country, isDetailsShown = false}) => {
+
+    const [showDetails, setShowDetails] = useState(isDetailsShown);
     const countryArr = Object.entries(country.languages).map(([key, value]) => (
         <li key={key}>
             {value}
@@ -8,19 +10,31 @@ const CountryDetails = ({country}) => {
     ))
 
     return (
-        <div>
-            <h1>{country.name.common}</h1>
-            <p>Capital {country.capital}</p>
-            <p>Area {country.area}</p>
-            <h2>Languages</h2>
-            <ul>
-                {countryArr}
-            </ul>
-            <img
-                src={country.flags.png}
-                alt={country.flags.alt} 
-            />
-        </div>
+        <>
+            {showDetails ? 
+                <>
+                    <h1>{country.name}</h1>
+                    <p>Capital {country.capital}</p>
+                    <p>Area {country.area}</p>
+                    <h2>Languages</h2>
+                    <ul>
+                        {countryArr}
+                    </ul>
+                    <img
+                        src={country.flags.png}
+                        alt={country.flags.alt} 
+                    />
+                </>
+                :
+                <>
+                    <p>
+                        {country.name} {" "}
+                        <button onClick={() => { setShowDetails(!showDetails)}}>Show</button>
+                    </p>
+                    
+                </>
+            } 
+        </>
     )
 }
 

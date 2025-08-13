@@ -1,11 +1,16 @@
+import { Fragment } from "react";
+import CountryDetails from "./CountryDetails";
+
 const CountryList = ({countryList}) => {
-
-    console.log("Display List: ", countryList)
-    const displayList = countryList.map((countryName) => 
-        <p key={countryName}>{countryName}</p>
-    )
     
+    const displayList = countryList.map((country) => 
+        <Fragment key={country.name}>
+            <CountryDetails country={country} isDetailsShown={false}/>
+        </Fragment>
+    )
 
+    console.log("Rendering list: ", displayList)
+    
     return (
         <>
             {displayList}
