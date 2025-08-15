@@ -10,7 +10,8 @@ const countryData = (countryObject) => {
         flags: {
             png: countryObject.flags.png,
             alt: countryObject.flags.alt
-        }
+        },
+        capitalInfo: countryObject.capitalInfo
     }
 }
 

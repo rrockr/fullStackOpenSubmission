@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import SearchQuery from './components/SearchQuery'
 import findCountryService from './services/findCountry'
+import findWeatherService from './services/findWeather'
 import CountryDetails from './components/CountryDetails'
 import * as Constants from './constants/constants'
 import CountryExcess from './components/CountryExcess'
@@ -9,6 +10,7 @@ import CountryList from './components/CountryList'
 function App() {
   const [query, setQuery] = useState('')
   const [country, setCountry] = useState(null)
+  const [weather, setWeather] = useState(null)
   const [allCountries, setAllCountries] = useState(null)
   const [matchingCountries, setMatchingCountries] = useState([])
   const [countryDisplay, setCountryDisplay] = useState(null)
@@ -16,15 +18,11 @@ function App() {
   const getCountriesAllHook = () => {
     findCountryService.getAllCountries()
       .then(responseData => {
-        console.log("All countries: ", responseData)
         setAllCountries(responseData)
       })
   }
 
-  useEffect(getCountriesAllHook, [])
-
   const getCountriesHook = () => {
-    console.log("Matching length: ", matchingCountries.length)
     if(matchingCountries.length > Constants.COUNTRIES_MAX) {
       setCountryDisplay(Constants.DISPLAY_EXCESS)
     }
@@ -47,7 +45,18 @@ function App() {
     }
   }
 
+  const getWeatherHook = () =>{
+    const getWeatherData = async () => {
+      const weatherData = await findWeatherService.getWeatherInCapital(country)
+      setWeather(weatherData)
+    }
+
+    getWeatherData()
+  }
+
+  useEffect(getCountriesAllHook, [])
   useEffect(getCountriesHook, [matchingCountries])
+  useEffect(getWeatherHook, [country])
 
   const handleQuery = (event) => {
     setQuery(event.target.value)
@@ -63,7 +72,7 @@ function App() {
   }
 
   const displayStates = {
-    details: <CountryDetails country={country} isDetailsShown={true}/>,
+    details: <CountryDetails country={country} weather={weather} isDetailsShown={true} isWeatherShown={true}/>,
     excess: <CountryExcess />,
     list: <CountryList countryList={matchingCountries} />
   }

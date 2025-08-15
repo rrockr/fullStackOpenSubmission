@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
+import * as Constants from '../constants/constants'
 
-const CountryDetails = ({country, isDetailsShown = false}) => {
-
+const CountryDetails = ({country, weather, isDetailsShown = false, isWeatherShown = false}) => {
     const [showDetails, setShowDetails] = useState(isDetailsShown);
     const countryArr = Object.entries(country.languages).map(([key, value]) => (
         <li key={key}>
@@ -24,6 +24,13 @@ const CountryDetails = ({country, isDetailsShown = false}) => {
                         src={country.flags.png}
                         alt={country.flags.alt} 
                     />
+                    {isWeatherShown && weather &&
+                        <>
+                            <h2>Weather in {country.capital}</h2>
+                            <p>Temperature {weather.temperature.toFixed(Constants.DISPLAY_DECIMAL_PLACES)}</p>
+                            <p>Wind {weather.windSpeed.toFixed(Constants.DISPLAY_DECIMAL_PLACES)}</p>
+                        </>
+                    }
                 </>
                 :
                 <>

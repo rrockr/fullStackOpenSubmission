@@ -8,8 +8,6 @@ const CountryList = ({countryList}) => {
             <CountryDetails country={country} isDetailsShown={false}/>
         </Fragment>
     )
-
-    console.log("Rendering list: ", displayList)
     
     return (
         <>
