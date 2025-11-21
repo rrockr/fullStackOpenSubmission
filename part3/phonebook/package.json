@@ -1,0 +1,25 @@
+{
+  "name": "part3",
+  "version": "1.0.0",
+  "description": "Submission for part 3",
+  "homepage": "https://github.com/rrockr/fullStackOpenSubmission#readme",
+  "bugs": {
+    "url": "https://github.com/rrockr/fullStackOpenSubmission/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rrockr/fullStackOpenSubmission.git"
+  },
+  "license": "ISC",
+  "author": "Darius Tan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
