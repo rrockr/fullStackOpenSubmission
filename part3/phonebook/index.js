@@ -59,12 +59,24 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
+    const testingArr = ["name", "number"]
+
+    if(testingArr.some(property => body[property] === undefined)) {
+      return response.status(400).json({
+        error:"Missing name or number"
+      })
+    }
+
+    if(phonebook.find(person => body.name === person.name) !== undefined) {
+      return response.status(400).json({
+        error:"Name must be unique"
+      })
+    }
 
     const newPerson = {
       id: Math.floor(Math.random() * maxRandomNum),
       name: body.name,
       number: body.number
-
     }
 
     phonebook = phonebook.concat(newPerson)
