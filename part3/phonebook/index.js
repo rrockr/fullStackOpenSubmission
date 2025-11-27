@@ -1,6 +1,8 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
+app.use(morgan('tiny'))
 
 const maxRandomNum = 100000
 let phonebook = [
@@ -74,7 +76,7 @@ app.post('/api/persons', (request, response) => {
     }
 
     const newPerson = {
-      id: Math.floor(Math.random() * maxRandomNum),
+      id: String(Math.floor(Math.random() * maxRandomNum)),
       name: body.name,
       number: body.number
     }
