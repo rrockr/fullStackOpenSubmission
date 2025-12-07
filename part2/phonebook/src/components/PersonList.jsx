@@ -5,8 +5,8 @@ const confirmDelete = (person, persons, callback) => {
   if(window.confirm(`Delete ${person.name}?`)) {
     phonebook
     .deletePerson(person.id)
-    .then(deletedPerson => {
-      const updatedPersons = persons.filter(person => person.id !== deletedPerson.id)
+    .then(() => {
+      const updatedPersons = persons.filter(p => person.id !== p.id)
       callback(updatedPersons)
     })
   }

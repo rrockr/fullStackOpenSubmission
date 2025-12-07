@@ -1,16 +1,11 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 const defaultMiddleware = morgan('tiny')
 const postMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :person')
 app.use(express.json())
-
-const masterLogger = (request, response, next) => {
-    if(request.method === "POST") {
-      console.log("test")
-    }
-    next()
-}
+app.use(cors())
 
 morgan.token('person', (request) => {
   const person = {
@@ -20,8 +15,6 @@ morgan.token('person', (request) => {
 
   return JSON.stringify(person)
 })
-
-app.use(masterLogger)
 
 const maxRandomNum = 100000
 let phonebook = [
