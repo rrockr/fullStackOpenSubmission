@@ -1,11 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
-const cors = require('cors')
 const app = express()
 const defaultMiddleware = morgan('tiny')
 const postMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :person')
 app.use(express.json())
-app.use(cors())
+app.use(express.static('dist'))
 
 morgan.token('person', (request) => {
   const person = {
