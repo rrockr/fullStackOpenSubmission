@@ -15,7 +15,7 @@ const confirmDelete = (person, persons, callback) => {
 const PersonList = ({persons, callback}) => {
   const newPersons = persons.map((person) => {
     return (
-      <Fragment key={person.name}>
+      <Fragment key={person.id}>
         <p>{person.name} {person.number} {' '}
           <button type="submit" onClick={() => confirmDelete(person, persons, callback)}>delete</button>
         </p>

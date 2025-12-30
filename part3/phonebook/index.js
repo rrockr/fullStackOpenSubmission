@@ -1,8 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const defaultMiddleware = morgan('tiny')
 const postMiddleware = morgan(':method :url :status :res[content-length] - :response-time ms :person')
+const Person = require('./models/person')
+
 app.use(express.json())
 app.use(express.static('dist'))
 
@@ -14,58 +17,40 @@ morgan.token('person', (request) => {
 
   return JSON.stringify(person)
 })
- 
-const maxRandomNum = 100000
-let phonebook = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
 
 app.get('/api/persons', defaultMiddleware, (request, response) => {
-    response.json(phonebook)
+    Person.find({}).then(persons => {
+      response.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', defaultMiddleware, (request, response) => {
     const id = request.params.id
-    let returnPhonebook = phonebook.find((person) => person.id === id)
-
-    if(returnPhonebook) {
-      response.json(returnPhonebook)
-    } else {
-      response.status(404).end()
-    }
-    
+    Person.findById(id).then(person => {
+        if(person) {
+          response.json(person)
+        } else {
+          response.status(404).end()
+        }
+    })
 })
 
 app.get('/info', defaultMiddleware, (request, response) => {
     const date = new Date().toString()
-    response.send(`
-        <p>Phonebook has info for ${phonebook.length} people</p>
+
+    Person.countDocuments().then(count => {
+      response.send(`
+        <p>Phonebook has info for ${count} people</p>
         <p>${date}</p>
         `)
+    })
 })
 
 app.delete('/api/persons/:id', defaultMiddleware, (request, response) => {
     const id = request.params.id
-    phonebook = phonebook.filter((person) => person.id !== id)
+    Person.findByIdAndDelete(id).then(deletedPerson => {
+      console.log(`Deleted person: ${deletedPerson}`)
+    })
     
     response.status(204).end()
 })
@@ -80,20 +65,28 @@ app.post('/api/persons', postMiddleware, (request, response) => {
       })
     }
 
-    if(phonebook.find(person => body.name === person.name) !== undefined) {
-      return response.status(400).json({
-        error:"Name must be unique"
-      })
-    }
-
-    const newPerson = {
-      id: String(Math.floor(Math.random() * maxRandomNum)),
+    const newPerson = new Person({
       name: body.name,
       number: body.number
-    }
+    })
 
-    phonebook = phonebook.concat(newPerson)
-    response.json(phonebook)
+    newPerson.save().then(returnedPerson => {
+      response.json(returnedPerson)
+    })
+    
+})
+
+app.put('/api/persons/:id', postMiddleware, (request, response) => {
+    const body = request.body
+    const id = request.params.id
+
+    Person.findByIdAndUpdate(
+      id, 
+      {name: body.name, number: body.number},
+      {new: true, runValidators: true}
+    ).then(returnedPerson => {
+      response.json(returnedPerson)
+    })
 })
 
 const PORT = 3001

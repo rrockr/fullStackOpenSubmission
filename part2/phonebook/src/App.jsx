@@ -68,9 +68,12 @@ const App = () => {
     else {
       phonebookService
         .createPerson(newPerson)
-        .then(returnedPersons => {
+        .then(returnedPerson => {
+          console.log(`Returned persons: `, returnedPerson)
           setNotificationType('success')
-          setPersons(returnedPersons)
+
+          const updatedPersons = persons.concat(returnedPerson)
+          setPersons(updatedPersons)
           setNotificationMsg(`Added ${newPerson.name}`)
           setTimeout(() => {
             setNotificationMsg(null)
