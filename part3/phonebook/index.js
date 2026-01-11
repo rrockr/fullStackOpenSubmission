@@ -18,13 +18,14 @@ morgan.token('person', (request) => {
   return JSON.stringify(person)
 })
 
-app.get('/api/persons', defaultMiddleware, (request, response) => {
+app.get('/api/persons', defaultMiddleware, (request, response, next) => {
     Person.find({}).then(persons => {
       response.json(persons)
     })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', defaultMiddleware, (request, response) => {
+app.get('/api/persons/:id', defaultMiddleware, (request, response, next) => {
     const id = request.params.id
     Person.findById(id).then(person => {
         if(person) {
@@ -33,6 +34,7 @@ app.get('/api/persons/:id', defaultMiddleware, (request, response) => {
           response.status(404).end()
         }
     })
+    .catch(error => next(error))
 })
 
 app.get('/info', defaultMiddleware, (request, response) => {
@@ -44,18 +46,19 @@ app.get('/info', defaultMiddleware, (request, response) => {
         <p>${date}</p>
         `)
     })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', defaultMiddleware, (request, response) => {
+app.delete('/api/persons/:id', defaultMiddleware, (request, response, next) => {
     const id = request.params.id
     Person.findByIdAndDelete(id).then(deletedPerson => {
       console.log(`Deleted person: ${deletedPerson}`)
+      response.status(204).end()
     })
-    
-    response.status(204).end()
+    .catch(error => next(error))
 })
 
-app.post('/api/persons', postMiddleware, (request, response) => {
+app.post('/api/persons', postMiddleware, (request, response, next) => {
     const body = request.body
     const testingArr = ["name", "number"]
 
@@ -73,10 +76,11 @@ app.post('/api/persons', postMiddleware, (request, response) => {
     newPerson.save().then(returnedPerson => {
       response.json(returnedPerson)
     })
+    .catch(error => next(error))
     
 })
 
-app.put('/api/persons/:id', postMiddleware, (request, response) => {
+app.put('/api/persons/:id', postMiddleware, (request, response, next) => {
     const body = request.body
     const id = request.params.id
 
@@ -87,7 +91,24 @@ app.put('/api/persons/:id', postMiddleware, (request, response) => {
     ).then(returnedPerson => {
       response.json(returnedPerson)
     })
+    .catch(error => next(error))
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.log("Error: ", error)
+
+  if(error.name === 'CastError') {
+    return response.status(400).send({error: 'Invalid Person Id'})
+  }
+
+  if(error.name === 'DocumentNotFoundError') {
+    return response.status(403).send({error: 'Document not found'})
+  }
+  
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => {
