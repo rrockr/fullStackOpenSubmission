@@ -84,12 +84,18 @@ app.put('/api/persons/:id', postMiddleware, (request, response, next) => {
     const body = request.body
     const id = request.params.id
 
-    Person.findByIdAndUpdate(
-      id, 
-      {name: body.name, number: body.number},
-      {new: true, runValidators: true}
-    ).then(returnedPerson => {
-      response.json(returnedPerson)
+    Person.findById(id)
+    .then(person => {
+      if(!person) {
+        return response.status(404).end()
+      }
+
+      person.name = body.name
+      person.number = body.number
+
+      person.save().then(updatedPerson => {
+        response.json(updatedPerson)
+      })
     })
     .catch(error => next(error))
 })
@@ -102,7 +108,7 @@ const errorHandler = (error, request, response, next) => {
   }
 
   if(error.name === 'DocumentNotFoundError') {
-    return response.status(403).send({error: 'Document not found'})
+    return response.status(404).send({error: 'Document not found'})
   }
   
   next(error)
