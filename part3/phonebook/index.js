@@ -37,6 +37,7 @@ app.get('/api/persons/:id', defaultMiddleware, (request, response, next) => {
     .catch(error => next(error))
 })
 
+
 app.get('/info', defaultMiddleware, (request, response) => {
     const date = new Date().toString()
 
