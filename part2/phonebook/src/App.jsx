@@ -79,6 +79,14 @@ const App = () => {
             setNotificationMsg(null)
           }, 5000)
         })
+        .catch(error => {
+          console.log(`Post error: `, error)
+          setNotificationType('error')
+          setNotificationMsg(`Person validation failed. Name must be at least 3 characters long.`)
+          setTimeout(() => {
+            setNotificationMsg(null)
+          }, 5000)
+        })
     }
   }
 
