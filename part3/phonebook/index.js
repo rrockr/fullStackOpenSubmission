@@ -11,81 +11,81 @@ app.use(express.static('dist'))
 
 morgan.token('person', (request) => {
   const person = {
-    "name": request.body.name,
-    "number": request.body.number
+    'name': request.body.name,
+    'number': request.body.number
   }
 
   return JSON.stringify(person)
 })
 
 app.get('/api/persons', defaultMiddleware, (request, response, next) => {
-    Person.find({}).then(persons => {
-      response.json(persons)
-    })
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
     .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', defaultMiddleware, (request, response, next) => {
-    const id = request.params.id
-    Person.findById(id).then(person => {
-        if(person) {
-          response.json(person)
-        } else {
-          response.status(404).end()
-        }
-    })
+  const id = request.params.id
+  Person.findById(id).then(person => {
+    if(person) {
+      response.json(person)
+    } else {
+      response.status(404).end()
+    }
+  })
     .catch(error => next(error))
 })
 
 
-app.get('/info', defaultMiddleware, (request, response) => {
-    const date = new Date().toString()
+app.get('/info', defaultMiddleware, (request, response, next) => {
+  const date = new Date().toString()
 
-    Person.countDocuments().then(count => {
-      response.send(`
+  Person.countDocuments().then(count => {
+    response.send(`
         <p>Phonebook has info for ${count} people</p>
         <p>${date}</p>
         `)
-    })
+  })
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', defaultMiddleware, (request, response, next) => {
-    const id = request.params.id
-    Person.findByIdAndDelete(id).then(deletedPerson => {
-      console.log(`Deleted person: ${deletedPerson}`)
-      response.status(204).end()
-    })
+  const id = request.params.id
+  Person.findByIdAndDelete(id).then(deletedPerson => {
+    console.log(`Deleted person: ${deletedPerson}`)
+    response.status(204).end()
+  })
     .catch(error => next(error))
 })
 
 app.post('/api/persons', postMiddleware, (request, response, next) => {
-    const body = request.body
-    const testingArr = ["name", "number"]
+  const body = request.body
+  const testingArr = ['name', 'number']
 
-    if(testingArr.some(property => body[property] === undefined)) {
-      return response.status(400).json({
-        error:"Missing name or number"
-      })
-    }
-
-    const newPerson = new Person({
-      name: body.name,
-      number: body.number
+  if(testingArr.some(property => body[property] === undefined)) {
+    return response.status(400).json({
+      error:'Missing name or number'
     })
+  }
 
-    newPerson.save().then(returnedPerson => {
-      response.json(returnedPerson)
-    })
+  const newPerson = new Person({
+    name: body.name,
+    number: body.number
+  })
+
+  newPerson.save().then(returnedPerson => {
+    response.json(returnedPerson)
+  })
     .catch(error => next(error))
-    
+
 })
 
 app.put('/api/persons/:id', postMiddleware, (request, response, next) => {
-    const body = request.body
-    const id = request.params.id
+  const body = request.body
+  const id = request.params.id
 
-    Person.findById(id)
+  Person.findById(id)
     .then(person => {
       if(!person) {
         return response.status(404).end()
@@ -102,20 +102,20 @@ app.put('/api/persons/:id', postMiddleware, (request, response, next) => {
 })
 
 const errorHandler = (error, request, response, next) => {
-  console.log("Error: ", error)
+  console.log('Error: ', error)
 
   if(error.name === 'CastError') {
-    return response.status(400).send({error: 'Invalid Person Id'})
+    return response.status(400).send({ error: 'Invalid Person Id' })
   }
 
   if(error.name === 'DocumentNotFoundError') {
-    return response.status(404).send({error: 'Document not found'})
+    return response.status(404).send({ error: 'Document not found' })
   }
 
   if(error.name === 'ValidationError') {
-    return response.status(400).send({error: 'Validation failed. Invalid person name or number'})
+    return response.status(400).send({ error: 'Validation failed. Invalid person name or number' })
   }
-  
+
   next(error)
 }
 
@@ -123,5 +123,5 @@ app.use(errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`)
+  console.log(`Server running on ${PORT}`)
 })

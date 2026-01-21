@@ -1,31 +1,31 @@
 const mongoose = require('mongoose')
 const url = process.env.MONGODB_URI
 
-mongoose.connect(url, {family: 4})
-  .then(result => {
-    console.log('connected to MongoDB')
+mongoose.connect(url, { family: 4 })
+  .then(() => {
+    console.log(`connected to MongoDB database ${mongoose.connection.db.databaseName}`)
   })
   .catch(error => {
     console.log('error connecting to MongoDB:', error.message)
   })
 
 const phonebookSchema = new mongoose.Schema({
-    name: {
-      type: String,
-      minLength: 3,
-      required: true
-    },
-    number: {
-      type: String,
-      minLength: 8,
-      validate: {
-        validator: function(v) {
-          return /^\d{2,3}\-\d+$/.test(v)
-        },
-        message: 'Invalid phone number'
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        return /^\d{2,3}-\d+$/.test(v)
       },
-      required: true
-    }
+      message: 'Invalid phone number'
+    },
+    required: true
+  }
 })
 
 
