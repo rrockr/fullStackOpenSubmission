@@ -1,6 +1,7 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
+const nodeUtil = require('node:util')
 
 const blogs = [
   {
@@ -91,6 +92,41 @@ const multipleFavoriteBlog = [
     },
 ]
 
+const multipleMostBlog = [
+  {
+    _id: "5a422aa71b54a676234d17f8",
+    title: "Go To Statement Considered Harmful",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 5,
+    __v: 0
+  },
+  {
+    _id: "5a422b3a1b54a676234d17f9",
+    title: "Canonical string reduction",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+    likes: 12,
+    __v: 0
+  },
+  {
+    _id: "5a422b891b54a676234d17fa",
+    title: "First class tests",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+    likes: 10,
+    __v: 0
+  },
+  {
+    _id: "5a422ba71b54a676234d17fb",
+    title: "TDD harms architecture",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+    likes: 0,
+    __v: 0
+  }
+]
+
 const listWithNoBlog = []
 
 describe('total likes', () => {
@@ -125,6 +161,52 @@ describe('favorite blog', () => {
     const result = listHelper.favoriteBlog(multipleFavoriteBlog)
     assert.strictEqual(result.likes, 5)
   })
+})
+
+describe('most blogs', () => {
+  test('most blogs with multiple blogs', () => {
+    let expected = {
+      'author': 'Robert C. Martin',
+      'blogs': 3
+    }
+
+    assert.deepStrictEqual(listHelper.mostBlogs(blogs), expected)
+  })
+
+  test('most blogs with only one blog', () => {
+    let expected = {
+      'author': 'Edsger W. Dijkstra',
+      'blogs': 1
+    }
+
+    assert.deepStrictEqual(listHelper.mostBlogs(listWithOneBlog), expected)
+  })
+
+  test('most blogs with no blog', () => {
+    let expected = null
+
+    assert.deepStrictEqual(listHelper.mostBlogs(listWithNoBlog), expected)
+  })
+
+  test('most blogs with multiple author', () => {
+    let expected = [{
+        'author': 'Edsger W. Dijkstra',
+        'blogs': 2
+      },
+      {
+        'author': 'Robert C. Martin',
+        'blogs': 2
+      }
+    ]
+
+    let author = listHelper.mostBlogs(multipleMostBlog)
+
+    assert.ok(expected.some((blog) => {
+      return nodeUtil.isDeepStrictEqual(blog, author)
+    }))
+  })
+
+  
 })
 
 
