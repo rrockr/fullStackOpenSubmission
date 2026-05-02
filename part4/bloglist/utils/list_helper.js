@@ -53,9 +53,40 @@ const mostBlogs = (blogs) => {
   return returnedAuthor
 }
 
+
+const mostLikes = (blogs) => {
+  const authorLikes = blogs.reduce((accumulator, blog) => {
+    if(accumulator[blog.author] === undefined) {
+      Object.assign(accumulator, {[blog.author]: blog.likes})
+    } else {
+      accumulator[blog.author] = accumulator[blog.author] + blog.likes
+    }
+
+    return accumulator
+  }, {})
+
+  let authorKeys = Object.keys(authorLikes)
+  let initialObject = {
+    'author': '',
+    'likes': 0
+  }
+
+  const result = authorKeys.reduce((accumulator, author) => {
+    if(authorLikes[author] > accumulator.likes){
+      accumulator.author = author
+      accumulator.likes = authorLikes[author]
+    }
+
+    return accumulator
+  }, initialObject)
+
+  return result
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
